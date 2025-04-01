@@ -1,0 +1,66 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useRouter } from "next/router";
+
+export default function RealEstateSaaS() {
+  const [location, setLocation] = useState("");
+  const [valuation, setValuation] = useState(null);
+  const router = useRouter();
+
+  const handleValuation = async () => {
+    // Simulated API call for property valuation
+    const response = await fetch(`/api/valuation?location=${location}`);
+    const data = await response.json();
+    setValuation(`Geschatte waarde voor ${location}: €${data.valuation}`);
+  };
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-center mb-6">AI Vastgoedwaardering & Marktanalyse</h1>
+      <Button className="mb-4" onClick={() => router.push('/login')}>Inloggen</Button>
+      <Tabs defaultValue="valuation">
+        <TabsList className="flex justify-center mb-4">
+          <TabsTrigger value="valuation">Waardering</TabsTrigger>
+          <TabsTrigger value="market">Marktanalyse</TabsTrigger>
+          <TabsTrigger value="broker">Virtuele Makelaar</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="valuation">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-xl font-semibold mb-2">AI Vastgoedwaardering</h2>
+              <Input 
+                placeholder="Voer locatie in (bijv. Marbella, Dubai Marina)" 
+                value={location} 
+                onChange={(e) => setLocation(e.target.value)} 
+              />
+              <Button className="mt-2" onClick={handleValuation}>Bereken Waarde</Button>
+              {valuation && <p className="mt-4 text-green-600">{valuation}</p>}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="market">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-xl font-semibold mb-2">Marktanalyse</h2>
+              <p>Realtime vastgoedtrends en prijspredicties komen hier.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="broker">
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-xl font-semibold mb-2">Virtuele Makelaar</h2>
+              <p>Persoonlijke AI-aanbevelingen voor de beste vastgoeddeals.</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
